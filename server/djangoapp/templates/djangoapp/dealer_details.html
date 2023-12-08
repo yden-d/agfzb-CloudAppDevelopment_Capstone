@@ -1,18 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Dealership Review</title>
     {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+  </head>
 
-    <body>
-
+  <body>
     <!--Add a nav bar here -->
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">Dealership Review</a>
+        <button
+          class="navbar-toggler d-lg-none"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapsibleNavId"
+          aria-controls="collapsibleNavId"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavId">
+          <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="{% url 'djangoapp:index' %}"
+                aria-current="page"
+                >Home <span class="visually-hidden">(current)</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'djangoapp:about' %}">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'djangoapp:contact' %}"
+                >Contact Us</a
+              >
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="#">({{ user.username }})</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'djangoapp:logout' %}"
+                >Log Out</a
+              >
+            </li>
+            {% else %}
+            <form
+              class="d-flex my-2 my-lg-0"
+              method="post"
+              action="{% url 'djangoapp:login' %}"
+            >
+              {% csrf_token %}
+              <input
+                class="form-control me-sm-2"
+                type="text"
+                name="username"
+                placeholder="Username"
+              />
+              <input
+                class="form-control me-sm-2 mx-2"
+                type="password"
+                name="password"
+                placeholder="Password"
+              />
+              <button class="btn btn-primary my-sm-0 mx-2" type="submit">
+                Login
+              </button>
+            </form>
+            <a
+              class="btn btn-outline-primary"
+              href="{% url 'djangoapp:register' %}"
+              >Sign Up</a
+            >
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
 
     <!-- Add reviews as cards -->
-
-    </body>
-
+    <main class="container" style="padding: 3%">
+      <div class="card-columns">
+        {% for review in reviews %}
+        <div
+          class="card"
+          style="height: 300px; overflow: scroll; overflow-x: hidden"
+        >
+          <img
+            src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png"
+            class="card-img-center"
+            style="
+              height: 100px;
+              width: 100px;
+              margin-left: 35%;
+              margin-bottom: 5%;
+              margin-top: 2%;
+            "
+          />
+          <div class="card-body" style="text-align: center">
+            <h5 class="card-title">
+              {{ review.car_make }}, {{ review.car_model }}
+            </h5>
+            <h5 class="card-title">{{ review.car_year }}</h5>
+            <p class="card-text">{{ review.review }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </main>
+  </body>
 </html>
